@@ -13,6 +13,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
+  String name = "";
   String email = "";
   String password = "";
 
@@ -22,7 +23,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -30,51 +31,57 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             Flexible(
               child: Hero(
                 tag: "logo",
-                child: Container(
+                child: SizedBox(
                   height: 200.0,
                   child: Image.asset('images/logo.png'),
                 ),
               ),
             ),
-            SizedBox(
-              height: 48.0,
+            const SizedBox(height: 48.0),
+            TextField(
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.name,
+              onChanged: (value) => name = value,
+              decoration: kTextFieldInputDecoration.copyWith(
+                  hintText: "Enter Your Nickname"),
+              style: const TextStyle(color: Colors.black),
             ),
+            const SizedBox(height: 48.0),
             TextField(
               textAlign: TextAlign.center,
               keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-              },
+              onChanged: (value) => email = value,
               decoration: kTextFieldInputDecoration.copyWith(
                   hintText: "Enter Your Email"),
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
-            SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 8.0),
             TextField(
               obscureText: true,
               textAlign: TextAlign.center,
-              onChanged: (value) {
-                password = value;
-              },
+              onChanged: (value) => password = value,
               decoration: kTextFieldInputDecoration.copyWith(
                 hintText: "Enter Your Password",
               ),
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
-            SizedBox(
-              height: 24.0,
-            ),
+            const SizedBox(height: 24.0),
             RoundedButton(
               title: "Register",
               color: Colors.blueAccent,
               onPressed: () async {
                 try {
                   final newUser = await _auth.createUserWithEmailAndPassword(
-                      email: email, password: password);
-                  if (newUser != null) {
-                    Navigator.pushNamed(context, ChatScreen.id);
+                    email: email,
+                    password: password,
+                  );
+                  if (newUser.user != null) {
+                    await newUser.user?.updateDisplayName(name);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      ChatScreen.id,
+                      (route) => false,
+                    );
                   }
                 } catch (e) {
                   print(e);

@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +22,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
-    animation =
-        ColorTween(begin: Colors.blue, end: Colors.white).animate(controller);
+    animation = ColorTween(
+      begin: Colors.blue,
+      end: Colors.white,
+    ).animate(controller);
     controller.forward();
     controller.addListener(() {
       setState(() {});
@@ -39,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     return Scaffold(
       backgroundColor: animation.value,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,25 +52,24 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               children: <Widget>[
                 Hero(
                   tag: "logo",
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
+                  child: SizedBox(
                     height: 60.0,
+                    child: Image.asset('images/logo.png'),
                   ),
                 ),
                 TypewriterAnimatedTextKit(
                   isRepeatingAnimation: false,
                   speed: const Duration(milliseconds: 100),
-                  text: ['Flash Chat'],
-                  textStyle: TextStyle(
-                      fontSize: 45.0,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black54),
+                  text: const ['Flash Chat'],
+                  textStyle: const TextStyle(
+                    fontSize: 45.0,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black54,
+                  ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 48.0,
-            ),
+            SizedBox(height: 48.0),
             RoundedButton(
               title: "Login",
               color: Colors.lightBlueAccent,

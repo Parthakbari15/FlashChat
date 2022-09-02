@@ -1,3 +1,4 @@
+import 'package:flash_chat/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -80,8 +81,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       messageTextController.clear();
                       _fireStrore.collection('messages').add({
                         'text': messageText,
-                        'sender': loggedINUser?.email,
+                        'sender': loggedINUser?.displayName,
+                        'timestamp': DateTime.now().toIso8601String(),
                       });
+                      NotificationService.sendNotification(
+                        title: loggedINUser?.displayName ?? 'anonymous',
+                        body: messageText,
+                      );
                     },
                     child: Text(
                       'Send',
@@ -102,7 +108,10 @@ class MessageStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _fireStrore.collection('messages').snapshots(),
+        stream: _fireStrore
+            .collection('messages')
+            .orderBy("timestamp")
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -116,7 +125,7 @@ class MessageStream extends StatelessWidget {
           for (var message in messages) {
             final messageText = message.data()['text'];
             final messageSender = message.data()['sender'];
-            final currentUser = loggedINUser?.email;
+            final currentUser = loggedINUser?.displayName;
 
             final messageBubble = MessageBubble(
               sender: messageSender ?? 'anonymous',
@@ -127,7 +136,6 @@ class MessageStream extends StatelessWidget {
           }
           return Expanded(
             child: ListView(
-              reverse: true,
               children: messageBubbles,
               padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
             ),

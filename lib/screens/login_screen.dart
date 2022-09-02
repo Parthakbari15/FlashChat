@@ -29,15 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
             Flexible(
               child: Hero(
                 tag: "logo",
-                child: Container(
+                child: SizedBox(
                   height: 200.0,
                   child: Image.asset('images/logo.png'),
                 ),
               ),
             ),
-            SizedBox(
-              height: 48.0,
-            ),
+            const SizedBox(height: 48.0),
             TextField(
               textAlign: TextAlign.center,
               keyboardType: TextInputType.emailAddress,
@@ -46,11 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               decoration: kTextFieldInputDecoration.copyWith(
                   hintText: "Enter Your Email"),
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
-            SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 8.0),
             TextField(
               textAlign: TextAlign.center,
               obscureText: true,
@@ -59,19 +55,25 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               decoration: kTextFieldInputDecoration.copyWith(
                   hintText: 'Enter Your Password'),
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
-            SizedBox(
-              height: 24.0,
-            ),
+            const SizedBox(height: 24.0),
             RoundedButton(
               title: "Log In",
               color: Colors.lightBlueAccent,
               onPressed: () async {
                 try {
-                  var validUser = await _auth.fetchSignInMethodsForEmail(email);
-                  if (validUser != null) {
-                    Navigator.pushNamed(context, ChatScreen.id);
+                  var validUser = await _auth.signInWithEmailAndPassword(
+                    email: email,
+                    password: password,
+                  );
+
+                  if (validUser.user != null) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      ChatScreen.id,
+                      (route) => false,
+                    );
                   }
                 } catch (e) {
                   print(e);
