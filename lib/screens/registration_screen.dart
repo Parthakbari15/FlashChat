@@ -46,7 +46,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   hintText: "Enter Your Nickname"),
               style: const TextStyle(color: Colors.black),
             ),
-            const SizedBox(height: 48.0),
+            const SizedBox(height: 8.0),
             TextField(
               textAlign: TextAlign.center,
               keyboardType: TextInputType.emailAddress,
